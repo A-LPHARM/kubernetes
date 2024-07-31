@@ -1,0 +1,8 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: k8s-controller-role
+rules:
+- apiGroups: ["alpharm.henry.com"]
+  resources: ["pdfdocs"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]

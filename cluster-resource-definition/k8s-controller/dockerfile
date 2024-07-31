@@ -1,0 +1,24 @@
+# Use an official Golang image to build the Go application
+FROM golang:1.22.5 AS build
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the go.mod and go.sum files and download dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the rest of the application source code
+COPY . .
+
+# Build the Go application
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o k8s-controller .
+
+# Use a minimal base image for the final container
+FROM alpine:3.14
+
+# Copy the built Go binary from the builder stage
+COPY --from=build /app/k8s-controller /usr/local/bin/k8s-controller
+
+# Set the entrypoint to the Go application
+ENTRYPOINT ["/usr/local/bin/k8s-controller"]

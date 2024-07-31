@@ -1,0 +1,9 @@
+apiVersion: alpharm.henry.com/v1
+kind: pdfdoc
+metadata:
+  name: my-document
+spec: 
+  documentName: build
+  text: |
+   we are creating a document to test our first crd
+   so this can be fun to try out

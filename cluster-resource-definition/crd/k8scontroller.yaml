@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: k8s-controller-sa
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: k8s-controller-role
+rules:
+- apiGroups: ["alpharm.henry.com"]
+  resources: ["pdfdocs"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8s-controller-binding
+subjects:
+- kind: ServiceAccount
+  name: k8s-controller-sa
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: k8s-controller-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-controller
+  labels:
+    app: k8s-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-controller
+  template:
+    metadata:
+      labels:
+        app: k8s-controller
+    spec:
+      serviceAccountName: k8s-controller-sa
+      containers:
+      - name: k8s-controller
+        image: henriksin1/k8s-controller:v1
+        args: []
