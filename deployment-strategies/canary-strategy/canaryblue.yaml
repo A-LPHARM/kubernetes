@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: canaryblueapp
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: canaryblueapp
+        image: henriksin1/nodeimage:blue
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
